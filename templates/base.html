@@ -36,62 +36,62 @@
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="#" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
+      <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto">
         <img src="{% static 'assets/img/logo.webp' %}" alt=""> 
         <h1 class="sitename">TenderHub</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="{% url 'home'%}" class="{% block nav_home %}{% endblock %}">Home</a></li>
-          <li><a href="#" class="{% block nav_about %}{% endblock %}">About</a></li>
-          <li><a href="#" class="{% block nav_tenders %}{% endblock %}">Tenders</a></li>
-          <li><a href="#" class="{% block nav_organizations %}{% endblock %}">Organizations</a></li>
+          <li><a href="{% url 'home' %}" class="{% block nav_home %}{% endblock %}">Home</a></li>
+          <li><a href="{% url 'about' %}" class="{% block nav_about %}{% endblock %}">About</a></li>
+          <li><a href="{% url 'tender_list' %}" class="{% block nav_tenders %}{% endblock %}">Tenders</a></li>
+          <li><a href="{% url 'organization_list' %}" class="{% block nav_organizations %}{% endblock %}">Organizations</a></li>
           
           {% if user.is_authenticated %}
           <li class="dropdown">
             <a href="#"><span>Dashboard</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              <li><a href="#">My Dashboard</a></li>
+              <li><a href="{% url 'dashboard_home' %}">My Dashboard</a></li>
               {% if user.is_vendor %}
-              <li><a href="#">My Bids</a></li>
-              <li><a href="#">My Contracts</a></li>
+              <li><a href="{% url 'my_bids' %}">My Bids</a></li>
+              <li><a href="{% url 'my_contracts' %}">My Contracts</a></li>
               {% endif %}
               {% if user.is_organization %}
-              <li><a href="#">My Tenders</a></li>
-              <li><a href="#">Received Bids</a></li>
+              <li><a href="{% url 'my_tenders' %}">My Tenders</a></li>
+              <li><a href="{% url 'received_bids' %}">Received Bids</a></li>
               {% endif %}
-              <li><a href="#">Notifications</a></li>
-              <li><a href="#">Profile Settings</a></li>
-              <li><a href="#">Logout</a></li>
+              <li><a href="{% url 'notifications' %}">Notifications</a></li>
+              <li><a href="{% url 'profile' %}">Profile Settings</a></li>
+              <li><a href="{% url 'logout' %}">Logout</a></li>
             </ul>
           </li>
           {% else %}
           <li class="dropdown">
             <a href="#"><span>Account</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              <li><a href="#">Login</a></li>
-              <li><a href="#">Register</a></li>
-              <li><a href="#">Register as Vendor</a></li>
-              <li><a href="#">Register as Organization</a></li>
+              <li><a href="{% url 'login' %}">Login</a></li>
+              <li><a href="{% url 'register' %}">Register</a></li>
+              <li><a href="{% url 'vendor_registration' %}">Register as Vendor</a></li>
+              <li><a href="{% url 'organization_registration' %}">Register as Organization</a></li>
             </ul>
           </li>
           {% endif %}
           
-          <li><a href="#" class="{% block nav_contact %}{% endblock %}">Contact</a></li>
+          <li><a href="{% url 'contact' %}" class="{% block nav_contact %}{% endblock %}">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
       {% if user.is_authenticated %}
-      <a class="btn-getstarted" href="#">Dashboard</a>
+      <a class="btn-getstarted" href="{% url 'dashboard_home' %}">Dashboard</a>
       {% else %}
-      <a class="btn-getstarted" href="#">Get Started</a>
+      <a class="btn-getstarted" href="{% url 'register' %}">Get Started</a>
       {% endif %}
 
     </div>
   </header>
+
 
   <main class="main">
     {% if messages %}
