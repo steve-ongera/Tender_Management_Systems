@@ -6,20 +6,22 @@
 {% block nav_tenders %}active{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<section class="page-header py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+<!-- Page Title -->
+<div class="page-title accent-background">
   <div class="container">
-    <div class="row">
-      <div class="col-12 text-center text-white">
-        <h1 class="display-4">Browse Tenders</h1>
-        <p class="lead">Find the perfect tender opportunity for your business</p>
-      </div>
-    </div>
+    <h1>Browse Tenders</h1>
+    <p class="lead">Find the perfect tender opportunity for your business</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Tenders</li>
+      </ol>
+    </nav>
   </div>
-</section>
+</div><!-- End Page Title -->
 
-<!-- Filters and Search -->
-<section class="py-4 bg-light">
+<!-- Filters Section -->
+<section class="filters-section section">
   <div class="container">
     <form method="get" action="{% url 'tender_list' %}">
       <div class="row g-3">
@@ -58,12 +60,12 @@
       </div>
     </form>
   </div>
-</section>
+</section><!-- End Filters Section -->
 
-<!-- Tender List -->
-<section class="py-5">
+<!-- Tender List Section -->
+<section id="tender-list" class="tender-list section">
   <div class="container">
-    <div class="row mb-3">
+    <div class="row mb-4">
       <div class="col-12">
         <p class="text-muted">Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} tenders</p>
       </div>
@@ -71,8 +73,8 @@
 
     <div class="row gy-4">
       {% for tender in page_obj %}
-      <div class="col-lg-6">
-        <div class="card h-100 shadow-sm hover-shadow">
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card h-100 shadow-sm tender-card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <span class="badge bg-primary">{{ tender.category.name }}</span>
@@ -169,15 +171,178 @@
     </nav>
     {% endif %}
   </div>
-</section>
+</section><!-- /Tender List Section -->
 
 <style>
-.hover-shadow {
-  transition: box-shadow 0.3s ease;
+.page-title {
+  padding: 60px 0;
+  position: relative;
 }
-.hover-shadow:hover {
+
+.page-title.accent-background {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.page-title h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.page-title .lead {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 15px;
+}
+
+.breadcrumbs {
+  margin-top: 10px;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.breadcrumbs ol li {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.breadcrumbs ol li + li {
+  padding-left: 10px;
+}
+
+.breadcrumbs ol li + li::before {
+  content: "/";
+  display: inline-block;
+  padding-right: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.breadcrumbs ol li.current {
+  color: white;
+  font-weight: 500;
+}
+
+.breadcrumbs ol a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.breadcrumbs ol a:hover {
+  color: white;
+}
+
+.filters-section {
+  background-color: #f8f9fa;
+  padding: 40px 0;
+}
+
+.tender-list {
+  padding: 60px 0;
+}
+
+.tender-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.tender-card:hover {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-5px);
+}
+
+.tender-card .card-title a {
+  color: #212529;
+  transition: color 0.3s;
+}
+
+.tender-card .card-title a:hover {
+  color: #0d6efd;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.badge {
+  padding: 6px 12px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.btn {
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.form-control, .form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.pagination .page-link {
+  border-radius: 6px;
+  margin: 0 3px;
+  color: #0d6efd;
+  border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.pagination .page-link:hover {
+  background-color: #f8f9fa;
+  border-color: #0d6efd;
+}
+
+code {
+  background-color: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #d63384;
+}
+
+.alert {
+  border-radius: 8px;
+  padding: 20px;
+}
+
+hr {
+  opacity: 0.1;
+}
+
+@media (max-width: 768px) {
+  .page-title h1 {
+    font-size: 2rem;
+  }
+  
+  .page-title .lead {
+    font-size: 1rem;
+  }
 }
 </style>
 {% endblock %}
