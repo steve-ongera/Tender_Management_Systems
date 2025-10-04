@@ -10,8 +10,8 @@
   <meta name="keywords" content="{% block meta_keywords %}tenders, procurement, bidding, contracts{% endblock %}">
 
   <!-- Favicons -->
-  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
-  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link href="{% static 'assets/img/logo.webp' %}" rel="icon">
+  <link href="{% static 'assets/img/logo.webp' %}" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -38,13 +38,13 @@
 
       <a href="#" class="logo d-flex align-items-center me-auto">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="{% static 'img/logo.png' %}" alt=""> -->
+        <img src="{% static 'assets/img/logo.webp' %}" alt=""> 
         <h1 class="sitename">TenderHub</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="#" class="{% block nav_home %}{% endblock %}">Home</a></li>
+          <li><a href="{% url 'home'%}" class="{% block nav_home %}{% endblock %}">Home</a></li>
           <li><a href="#" class="{% block nav_about %}{% endblock %}">About</a></li>
           <li><a href="#" class="{% block nav_tenders %}{% endblock %}">Tenders</a></li>
           <li><a href="#" class="{% block nav_organizations %}{% endblock %}">Organizations</a></li>
