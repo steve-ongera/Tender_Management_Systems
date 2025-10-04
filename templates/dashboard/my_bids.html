@@ -1,0 +1,114 @@
+<!-- ==================== MY BIDS TEMPLATE ==================== -->
+<!-- File: dashboard/my_bids.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}My Bids{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>My Bids</h1>
+    <p class="lead">Track all your submitted bids</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+        <li class="current">My Bids</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      {% for bid in page_obj %}
+      <div class="col-12">
+        <div class="card bid-card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="badge bg-primary">{{ bid.tender.category.name }}</span>
+                  <span class="badge bg-{{ bid.status|yesno:'success,warning,info' }}">{{ bid.get_status_display }}</span>
+                </div>
+                <h5 class="mb-2">{{ bid.tender.title }}</h5>
+                <p class="text-muted mb-2">
+                  <i class="bi bi-building"></i> {{ bid.tender.organization.name }}
+                </p>
+                <p class="mb-2">
+                  <strong>Bid Number:</strong> <code>{{ bid.bid_number }}</code><br>
+                  <strong>Tender Number:</strong> <code>{{ bid.tender.tender_number }}</code>
+                </p>
+                <p class="text-muted small">
+                  Submitted: {{ bid.submitted_at|date:"M d, Y H:i" }}
+                </p>
+              </div>
+              <div class="col-lg-4 text-lg-end">
+                <h4 class="text-primary mb-2">{{ bid.currency }} {{ bid.bid_amount|intcomma }}</h4>
+                <p class="text-muted small mb-3">Bid Amount</p>
+                {% if bid.total_score %}
+                <p class="mb-2">
+                  <strong>Score:</strong> {{ bid.total_score }}/100
+                </p>
+                {% endif %}
+                <a href="#" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-eye"></i> View Details
+                </a>
+              </div>
+            </div>
+            {% if bid.evaluator_comments %}
+            <hr>
+            <div class="alert alert-info mb-0">
+              <strong>Evaluator Comments:</strong><br>
+              {{ bid.evaluator_comments }}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <i class="bi bi-inbox fs-1"></i>
+          <h4 class="mt-3">No Bids Yet</h4>
+          <p>Start bidding on tenders to see them here</p>
+          <a href="{% url 'tender_list' %}" class="btn btn-primary">Browse Tenders</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.bid-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.bid-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}

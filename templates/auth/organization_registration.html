@@ -1,0 +1,312 @@
+<!-- ==================== ORGANIZATION REGISTRATION TEMPLATE ==================== -->
+<!-- File: auth/organization_registration.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organization Registration{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Organization Registration</h1>
+    <p class="lead">Register your organization to post tenders</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li class="current">Organization</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <h5 class="mb-3">Account Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  {{ form.username.label_tag }}
+                  {{ form.username }}
+                  {% if form.username.errors %}
+                    <div class="text-danger small">{{ form.username.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.email.label_tag }}
+                  {{ form.email }}
+                  {% if form.email.errors %}
+                    <div class="text-danger small">{{ form.email.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.password1.label_tag }}
+                  {{ form.password1 }}
+                  {% if form.password1.errors %}
+                    <div class="text-danger small">{{ form.password1.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.password2.label_tag }}
+                  {{ form.password2 }}
+                  {% if form.password2.errors %}
+                    <div class="text-danger small">{{ form.password2.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5 class="mb-3">Organization Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-12">
+                  {{ form.name.label_tag }}
+                  {{ form.name }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.organization_type.label_tag }}
+                  {{ form.organization_type }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.registration_number.label_tag }}
+                  {{ form.registration_number }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.tax_id.label_tag }}
+                  {{ form.tax_id }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.phone.label_tag }}
+                  {{ form.phone }}
+                </div>
+                <div class="col-12">
+                  {{ form.website.label_tag }}
+                  {{ form.website }}
+                </div>
+                <div class="col-12">
+                  {{ form.logo.label_tag }}
+                  {{ form.logo }}
+                  <small class="text-muted d-block">Upload your organization logo</small>
+                </div>
+              </div>
+
+              <h5 class="mb-3">Address Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-12">
+                  {{ form.address.label_tag }}
+                  {{ form.address }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.city.label_tag }}
+                  {{ form.city }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.country.label_tag }}
+                  {{ form.country }}
+                </div>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-lg">
+                  <i class="bi bi-check-circle"></i> Register Organization
+                </button>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                  Already have an account? Login
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==================== GLOBAL STYLES ==================== -->
+<style>
+/* Common styles for all templates */
+.page-title {
+  padding: 60px 0;
+  position: relative;
+}
+
+.page-title.accent-background {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.page-title h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.page-title .lead {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 15px;
+}
+
+.breadcrumbs {
+  margin-top: 10px;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.breadcrumbs ol li {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.breadcrumbs ol li + li {
+  padding-left: 10px;
+}
+
+.breadcrumbs ol li + li::before {
+  content: "/";
+  display: inline-block;
+  padding-right: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.breadcrumbs ol li.current {
+  color: white;
+  font-weight: 500;
+}
+
+.breadcrumbs ol a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.breadcrumbs ol a:hover {
+  color: white;
+}
+
+.section {
+  padding: 60px 0;
+}
+
+.filters-section {
+  background-color: #f8f9fa;
+  padding: 40px 0;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 15px 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.badge {
+  padding: 6px 12px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.btn {
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.form-control, .form-select, textarea {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus, textarea:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.pagination .page-link {
+  border-radius: 6px;
+  margin: 0 3px;
+  color: #0d6efd;
+  border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.pagination .page-link:hover {
+  background-color: #f8f9fa;
+  border-color: #0d6efd;
+}
+
+code {
+  background-color: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #d63384;
+}
+
+.alert {
+  border-radius: 8px;
+  padding: 15px 20px;
+}
+
+hr {
+  opacity: 0.1;
+  margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .page-title h1 {
+    font-size: 2rem;
+  }
+  
+  .page-title .lead {
+    font-size: 1rem;
+  }
+  
+  .section {
+    padding: 40px 0;
+  }
+}
+</style>
+
+{% endblock %}

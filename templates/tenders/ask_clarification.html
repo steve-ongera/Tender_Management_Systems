@@ -1,0 +1,72 @@
+<!-- ==================== ASK CLARIFICATION TEMPLATE ==================== -->
+<!-- File: tenders/ask_clarification.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ask Clarification - {{ tender.tender_number }}{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Ask Clarification</h1>
+    <p class="lead">{{ tender.title }}</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'tender_detail' tender.slug %}">Tender</a></li>
+        <li class="current">Ask Clarification</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="card">
+          <div class="card-body p-4">
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle"></i> Your question will be reviewed and answered by the organization. Responses will be visible to all bidders.
+            </div>
+
+            <form method="post">
+              {% csrf_token %}
+              
+              <div class="mb-4">
+                <label class="form-label">Your Question *</label>
+                {{ form.question }}
+                {% if form.question.errors %}
+                  <div class="text-danger small">{{ form.question.errors }}</div>
+                {% endif %}
+                <small class="text-muted">Be clear and specific in your question</small>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-send"></i> Submit Question
+                </button>
+                <a href="{% url 'tender_detail' tender.slug %}" class="btn btn-outline-secondary">
+                  Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tender Info -->
+        <div class="card mt-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tender Information</h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-2"><strong>Tender Number:</strong> <code>{{ tender.tender_number }}</code></p>
+            <p class="mb-2"><strong>Organization:</strong> {{ tender.organization.name }}</p>
+            <p class="mb-0"><strong>Deadline:</strong> <span class="text-danger">{{ tender.submission_deadline|date:"M d, Y H:i" }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

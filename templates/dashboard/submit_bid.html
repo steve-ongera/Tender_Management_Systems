@@ -1,0 +1,134 @@
+<!-- ==================== SUBMIT BID TEMPLATE ==================== -->
+<!-- File: dashboard/submit_bid.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Bid - {{ tender.tender_number }}{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Submit Bid</h1>
+    <p class="lead">{{ tender.title }}</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'tender_detail' tender.slug %}">Tender</a></li>
+        <li class="current">Submit Bid</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <h5 class="mb-3">Bid Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Bid Amount *</label>
+                  {{ form.bid_amount }}
+                  {% if form.bid_amount.errors %}
+                    <div class="text-danger small">{{ form.bid_amount.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Currency</label>
+                  {{ form.currency }}
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Delivery Timeline (Days) *</label>
+                  {{ form.delivery_timeline_days }}
+                </div>
+              </div>
+
+              <h5 class="mb-3">Technical Proposal</h5>
+              <div class="mb-4">
+                {{ form.technical_proposal }}
+                <small class="text-muted">Describe your technical approach and methodology</small>
+              </div>
+
+              <h5 class="mb-3">Financial Proposal</h5>
+              <div class="mb-4">
+                {{ form.financial_proposal }}
+                <small class="text-muted">Provide detailed financial breakdown</small>
+              </div>
+
+              <h5 class="mb-3">Bid Security</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Bid Security Reference</label>
+                  {{ form.bid_security_reference }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Bid Security Amount</label>
+                  {{ form.bid_security_amount }}
+                </div>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-lg">
+                  <i class="bi bi-check-circle"></i> Submit Bid
+                </button>
+                <a href="{% url 'tender_detail' tender.slug %}" class="btn btn-outline-secondary">
+                  Cancel
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tender Information</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <strong>Tender Number:</strong><br>
+                <code>{{ tender.tender_number }}</code>
+              </li>
+              <li class="mb-2">
+                <strong>Organization:</strong><br>
+                {{ tender.organization.name }}
+              </li>
+              <li class="mb-2">
+                <strong>Estimated Value:</strong><br>
+                {{ tender.currency }} {{ tender.estimated_value|floatformat:2 }}
+              </li>
+              <li class="mb-2">
+                <strong>Deadline:</strong><br>
+                <span class="text-danger">{{ tender.submission_deadline|date:"M d, Y H:i" }}</span>
+              </li>
+              <li class="mb-2">
+                <strong>Bid Security:</strong><br>
+                {{ tender.currency }} {{ tender.bid_security_amount|floatformat:2 }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-body">
+            <h6>Important Notes</h6>
+            <ul class="small">
+              <li>Ensure all information is accurate</li>
+              <li>Submit before deadline</li>
+              <li>Provide bid security</li>
+              <li>Review eligibility criteria</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

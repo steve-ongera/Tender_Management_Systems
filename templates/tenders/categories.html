@@ -1,0 +1,76 @@
+<!-- ==================== CATEGORIES TEMPLATE ==================== -->
+<!-- File: tenders/categories.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tender Categories{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Tender Categories</h1>
+    <p class="lead">Browse tenders by category</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Categories</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      {% for category in categories %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up">
+        <div class="card category-card h-100">
+          <div class="card-body text-center">
+            <div class="category-icon mb-3">
+              <i class="bi {{ category.icon|default:'bi-folder' }} fs-1 text-primary"></i>
+            </div>
+            <h5 class="card-title">{{ category.name }}</h5>
+            <p class="text-muted">{{ category.description|truncatewords:15 }}</p>
+            <div class="mb-3">
+              <span class="badge bg-primary">{{ category.tender_count }} Tenders</span>
+            </div>
+            <a href="{% url 'tender_category' category.slug %}" class="btn btn-outline-primary">
+              Browse Tenders <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <i class="bi bi-info-circle fs-1"></i>
+          <h4 class="mt-3">No Categories Available</h4>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+.category-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.category-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+}
+</style>
+{% endblock %}

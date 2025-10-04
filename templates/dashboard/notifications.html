@@ -1,0 +1,105 @@
+<!-- ==================== NOTIFICATIONS TEMPLATE ==================== -->
+<!-- File: dashboard/notifications.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Notifications</h1>
+    <p class="lead">Stay updated with your activities</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+        <li class="current">Notifications</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        {% for notif in page_obj %}
+        <div class="card notification-card mb-3 {% if not notif.is_read %}unread{% endif %}">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center mb-2">
+                  <span class="badge bg-primary me-2">{{ notif.get_notification_type_display }}</span>
+                  {% if not notif.is_read %}
+                  <span class="badge bg-danger">New</span>
+                  {% endif %}
+                </div>
+                <h5>{{ notif.title }}</h5>
+                <p class="mb-2">{{ notif.message }}</p>
+                <small class="text-muted">
+                  <i class="bi bi-clock"></i> {{ notif.created_at|timesince }} ago
+                </small>
+              </div>
+              {% if notif.link %}
+              <a href="{{ notif.link }}" class="btn btn-sm btn-outline-primary">
+                View <i class="bi bi-arrow-right"></i>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info text-center">
+          <i class="bi bi-bell-slash fs-1"></i>
+          <h4 class="mt-3">No Notifications</h4>
+          <p>You're all caught up!</p>
+        </div>
+        {% endfor %}
+
+        {% if page_obj.has_other_pages %}
+        <nav class="mt-4">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+              <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.notification-card.unread {
+  border-left: 4px solid #0d6efd;
+  background-color: #f8f9fa;
+}
+.notification-card {
+  transition: all 0.3s ease;
+}
+.notification-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+.accent-background {
+  background-color: #0d6efd;
+}
+.accent-background h1,
+.accent-background p,
+.accent-background .breadcrumbs a,
+.accent-background .breadcrumbs .current {
+    color: white;
+
+}
+</style>
+
+{% endblock %}

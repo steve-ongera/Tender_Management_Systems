@@ -1,0 +1,139 @@
+<!-- ==================== VENDOR REGISTRATION TEMPLATE ==================== -->
+<!-- File: auth/vendor_registration.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vendor Registration{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Vendor Registration</h1>
+    <p class="lead">Join our platform to access tender opportunities</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li class="current">Vendor</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <h5 class="mb-3">Account Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  {{ form.username.label_tag }}
+                  {{ form.username }}
+                  {% if form.username.errors %}
+                    <div class="text-danger small">{{ form.username.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.email.label_tag }}
+                  {{ form.email }}
+                  {% if form.email.errors %}
+                    <div class="text-danger small">{{ form.email.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.password1.label_tag }}
+                  {{ form.password1 }}
+                  {% if form.password1.errors %}
+                    <div class="text-danger small">{{ form.password1.errors }}</div>
+                  {% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ form.password2.label_tag }}
+                  {{ form.password2 }}
+                  {% if form.password2.errors %}
+                    <div class="text-danger small">{{ form.password2.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5 class="mb-3">Company Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-12">
+                  {{ form.company_name.label_tag }}
+                  {{ form.company_name }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.business_type.label_tag }}
+                  {{ form.business_type }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.registration_number.label_tag }}
+                  {{ form.registration_number }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.tax_id.label_tag }}
+                  {{ form.tax_id }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.year_established.label_tag }}
+                  {{ form.year_established }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.number_of_employees.label_tag }}
+                  {{ form.number_of_employees }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.annual_turnover.label_tag }}
+                  {{ form.annual_turnover }}
+                </div>
+              </div>
+
+              <h5 class="mb-3">Contact Information</h5>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  {{ form.phone.label_tag }}
+                  {{ form.phone }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.website.label_tag }}
+                  {{ form.website }}
+                </div>
+                <div class="col-12">
+                  {{ form.address.label_tag }}
+                  {{ form.address }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.city.label_tag }}
+                  {{ form.city }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.country.label_tag }}
+                  {{ form.country }}
+                </div>
+                <div class="col-md-4">
+                  {{ form.postal_code.label_tag }}
+                  {{ form.postal_code }}
+                </div>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-check-circle"></i> Register
+                </button>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                  Already have an account? Login
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

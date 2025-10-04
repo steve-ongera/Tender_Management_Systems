@@ -1,0 +1,355 @@
+<!-- ==================== DASHBOARD HOME TEMPLATE ==================== -->
+<!-- File: dashboard/home.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Dashboard</h1>
+    <p class="lead">Welcome back, {{ user.get_full_name|default:user.username }}</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    {% if user_type == 'vendor' %}
+    <!-- Vendor Dashboard -->
+    <div class="row gy-4 mb-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">My Bids</h6>
+                <h3 class="mb-0">{{ my_bids.count }}</h3>
+              </div>
+              <div class="stats-icon bg-primary">
+                <i class="bi bi-file-earmark-text"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">Contracts</h6>
+                <h3 class="mb-0">{{ my_contracts.count }}</h3>
+              </div>
+              <div class="stats-icon bg-success">
+                <i class="bi bi-file-earmark-check"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">Notifications</h6>
+                <h3 class="mb-0">{{ notifications.count }}</h3>
+              </div>
+              <div class="stats-icon bg-warning">
+                <i class="bi bi-bell"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">Rating</h6>
+                <h3 class="mb-0">{{ profile.rating }}/5.0</h3>
+              </div>
+              <div class="stats-icon bg-info">
+                <i class="bi bi-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row gy-4">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Recent Bids</h5>
+          </div>
+          <div class="card-body">
+            {% if my_bids %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Tender</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bid in my_bids %}
+                  <tr>
+                    <td>{{ bid.tender.tender_number }}</td>
+                    <td>{{ bid.currency }} {{ bid.bid_amount|intcomma }}</td>
+                    <td><span class="badge bg-{{ bid.status|yesno:'success,warning,info' }}">{{ bid.get_status_display }}</span></td>
+                    <td>{{ bid.submitted_at|date:"M d, Y" }}</td>
+                    <td><a href="#" class="btn btn-sm btn-outline-primary">View</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center mt-3">
+              <a href="{% url 'dashboard_my_bids' %}" class="btn btn-primary">View All Bids</a>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="bi bi-inbox fs-1 text-muted"></i>
+              <p class="mt-3 text-muted">No bids submitted yet</p>
+              <a href="{% url 'tender_list' %}" class="btn btn-primary">Browse Tenders</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header bg-warning">
+            <h5 class="mb-0">Notifications</h5>
+          </div>
+          <div class="card-body">
+            {% if notifications %}
+            <ul class="list-unstyled">
+              {% for notif in notifications %}
+              <li class="mb-3 pb-3 border-bottom">
+                <h6>{{ notif.title }}</h6>
+                <p class="small text-muted mb-0">{{ notif.message|truncatewords:15 }}</p>
+                <small class="text-muted">{{ notif.created_at|timesince }} ago</small>
+              </li>
+              {% endfor %}
+            </ul>
+            <div class="text-center">
+              <a href="{% url 'dashboard_notifications' %}" class="btn btn-outline-warning btn-sm">View All</a>
+            </div>
+            {% else %}
+            <div class="text-center py-3">
+              <i class="bi bi-bell-slash fs-3 text-muted"></i>
+              <p class="mt-2 text-muted">No notifications</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5>Quick Actions</h5>
+            <div class="d-grid gap-2">
+              <a href="{% url 'tender_list' %}" class="btn btn-outline-primary">
+                <i class="bi bi-search"></i> Browse Tenders
+              </a>
+              <a href="{% url 'dashboard_my_bids' %}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-text"></i> My Bids
+              </a>
+              <a href="{% url 'dashboard_my_contracts' %}" class="btn btn-outline-info">
+                <i class="bi bi-file-earmark-check"></i> My Contracts
+              </a>
+              <a href="{% url 'dashboard_profile' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-person"></i> Profile Settings
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% elif user_type == 'organization' %}
+    <!-- Organization Dashboard -->
+    <div class="row gy-4 mb-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">My Tenders</h6>
+                <h3 class="mb-0">{{ my_tenders.count }}</h3>
+              </div>
+              <div class="stats-icon bg-primary">
+                <i class="bi bi-file-earmark-text"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">Received Bids</h6>
+                <h3 class="mb-0">{{ recent_bids.count }}</h3>
+              </div>
+              <div class="stats-icon bg-success">
+                <i class="bi bi-inbox"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="card stats-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="text-muted mb-2">Organizations</h6>
+                <h3 class="mb-0">{{ organizations.count }}</h3>
+              </div>
+              <div class="stats-icon bg-info">
+                <i class="bi bi-building"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row gy-4">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Recent Tenders</h5>
+          </div>
+          <div class="card-body">
+            {% if my_tenders %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Tender Number</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for tender in my_tenders %}
+                  <tr>
+                    <td><code>{{ tender.tender_number }}</code></td>
+                    <td>{{ tender.title|truncatewords:5 }}</td>
+                    <td><span class="badge bg-{{ tender.status|yesno:'success,warning,info' }}">{{ tender.get_status_display }}</span></td>
+                    <td>{{ tender.submission_deadline|date:"M d, Y" }}</td>
+                    <td><a href="{% url 'tender_detail' tender.slug %}" class="btn btn-sm btn-outline-primary">View</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="text-center mt-3">
+              <a href="{% url 'dashboard_my_tenders' %}" class="btn btn-primary">View All Tenders</a>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="bi bi-inbox fs-1 text-muted"></i>
+              <p class="mt-3 text-muted">No tenders posted yet</p>
+              <a href="#" class="btn btn-primary">Post a Tender</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Recent Bids</h5>
+          </div>
+          <div class="card-body">
+            {% if recent_bids %}
+            <ul class="list-unstyled">
+              {% for bid in recent_bids %}
+              <li class="mb-3 pb-3 border-bottom">
+                <h6>{{ bid.vendor.company_name }}</h6>
+                <p class="small mb-1">{{ bid.tender.tender_number }}</p>
+                <p class="text-primary mb-0">{{ bid.currency }} {{ bid.bid_amount|intcomma }}</p>
+                <small class="text-muted">{{ bid.submitted_at|timesince }} ago</small>
+              </li>
+              {% endfor %}
+            </ul>
+            <div class="text-center">
+              <a href="{% url 'dashboard_received_bids' %}" class="btn btn-outline-success btn-sm">View All</a>
+            </div>
+            {% else %}
+            <div class="text-center py-3">
+              <i class="bi bi-inbox fs-3 text-muted"></i>
+              <p class="mt-2 text-muted">No bids received</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5>Quick Actions</h5>
+            <div class="d-grid gap-2">
+              <a href="#" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle"></i> Post New Tender
+              </a>
+              <a href="{% url 'dashboard_my_tenders' %}" class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-text"></i> My Tenders
+              </a>
+              <a href="{% url 'dashboard_received_bids' %}" class="btn btn-outline-info">
+                <i class="bi bi-inbox"></i> Received Bids
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.stats-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+.stats-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 24px;
+  color: white;
+}
+</style>
+{% endblock %}
+<!-- ==================== END DASHBOARD HOME TEMPLATE ==================== -->

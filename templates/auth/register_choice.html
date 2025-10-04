@@ -1,0 +1,100 @@
+<!-- ==================== REGISTRATION CHOICE TEMPLATE ==================== -->
+<!-- File: auth/register_choice.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Create Your Account</h1>
+    <p class="lead">Choose your registration type</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Register</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card registration-card h-100">
+              <div class="card-body text-center p-5">
+                <div class="registration-icon mb-4">
+                  <i class="bi bi-briefcase fs-1 text-primary"></i>
+                </div>
+                <h3 class="mb-3">Register as Vendor</h3>
+                <p class="text-muted mb-4">Register your company to bid on tenders and win contracts</p>
+                <ul class="list-unstyled text-start mb-4">
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Browse and bid on tenders</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Track your bids and contracts</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Receive notifications</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Ask clarifications</li>
+                </ul>
+                <a href="{% url 'vendor_registration' %}" class="btn btn-primary btn-lg w-100">
+                  Register as Vendor <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card registration-card h-100">
+              <div class="card-body text-center p-5">
+                <div class="registration-icon mb-4">
+                  <i class="bi bi-building fs-1 text-success"></i>
+                </div>
+                <h3 class="mb-3">Register as Organization</h3>
+                <p class="text-muted mb-4">Register your organization to post tenders and manage procurement</p>
+                <ul class="list-unstyled text-start mb-4">
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Post and manage tenders</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Receive and evaluate bids</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Manage contracts</li>
+                  <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Track milestones</li>
+                </ul>
+                <a href="{% url 'organization_registration' %}" class="btn btn-success btn-lg w-100">
+                  Register as Organization <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.registration-card {
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+}
+.registration-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  border-color: #0d6efd;
+}
+.registration-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+}
+</style>
+{% endblock %}

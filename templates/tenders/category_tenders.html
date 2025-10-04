@@ -1,0 +1,82 @@
+<!-- ==================== CATEGORY TENDERS TEMPLATE ==================== -->
+<!-- File: tenders/category_tenders.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ category.name }} Tenders{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>{{ category.name }}</h1>
+    <p class="lead">{{ category.description }}</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'tender_categories' %}">Categories</a></li>
+        <li class="current">{{ category.name }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      {% for tender in page_obj %}
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="card h-100 shadow-sm tender-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-primary">{{ tender.category.name }}</span>
+              <span class="badge bg-success">{{ tender.get_status_display }}</span>
+            </div>
+            <h5 class="card-title mb-2">
+              <a href="{% url 'tender_detail' tender.slug %}">{{ tender.title }}</a>
+            </h5>
+            <p class="text-muted small mb-2">
+              <i class="bi bi-building"></i> {{ tender.organization.name }}
+            </p>
+            <p class="card-text">{{ tender.description|truncatewords:25 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <strong class="text-primary fs-5">{{ tender.currency }} {{ tender.estimated_value|intcomma }}</strong>
+              <a href="{% url 'tender_detail' tender.slug %}" class="btn btn-outline-primary">View Details</a>
+            </div>
+            <hr class="my-2">
+            <small class="text-danger">
+              <i class="bi bi-clock"></i> Closes: {{ tender.submission_deadline|date:"M d, Y" }}
+            </small>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <h4>No tenders found in this category</h4>
+          <a href="{% url 'tender_list' %}" class="btn btn-primary mt-3">Browse All Tenders</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!-- ==================== ORGANIZATION LIST TEMPLATE ==================== -->
+<!-- File: organizations/organization_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organizations{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Organizations</h1>
+    <p class="lead">Browse verified organizations posting tenders</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Organizations</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="filters-section section">
+  <div class="container">
+    <form method="get" action="">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <input type="text" name="q" class="form-control" placeholder="Search organizations..." value="{{ search_query|default:'' }}">
+        </div>
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-search"></i> Search
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      {% for org in page_obj %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up">
+        <div class="card h-100 organization-card">
+          <div class="card-body text-center">
+            {% if org.logo %}
+            <img src="{{ org.logo.url }}" alt="{{ org.name }}" class="org-logo mb-3">
+            {% else %}
+            <div class="org-logo-placeholder mb-3">
+              <i class="bi bi-building fs-1"></i>
+            </div>
+            {% endif %}
+            <h5 class="card-title">{{ org.name }}</h5>
+            <p class="text-muted">{{ org.get_organization_type_display }}</p>
+            <p class="small"><i class="bi bi-geo-alt"></i> {{ org.city }}, {{ org.country }}</p>
+            <div class="mb-3">
+              <span class="badge bg-primary">{{ org.tender_count }} Active Tenders</span>
+            </div>
+            <a href="{% url 'organization_detail' org.slug %}" class="btn btn-outline-primary">
+              View Profile <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <h4>No organizations found</h4>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">Previous</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+        </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.organization-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.organization-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.org-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.org-logo-placeholder {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+</style>
+{% endblock %}

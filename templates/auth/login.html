@@ -1,0 +1,78 @@
+<!-- ==================== LOGIN TEMPLATE ==================== -->
+<!-- File: auth/login.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Login</h1>
+    <p class="lead">Access your account</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="current">Login</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-8">
+        <div class="card">
+          <div class="card-body p-5">
+            <div class="text-center mb-4">
+              <i class="bi bi-person-circle fs-1 text-primary"></i>
+              <h3 class="mt-3">Welcome Back</h3>
+              <p class="text-muted">Login to your account</p>
+            </div>
+
+            {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="remember">
+                <label class="form-check-label" for="remember">Remember me</label>
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+              </div>
+            </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+              <p class="mb-2">Don't have an account?</p>
+              <a href="{% url 'register' %}" class="btn btn-outline-primary w-100">
+                Create Account
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

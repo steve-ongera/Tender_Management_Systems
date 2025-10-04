@@ -1,0 +1,196 @@
+<!-- ==================== CONTRACT DETAIL TEMPLATE ==================== -->
+<!-- File: dashboard/contract_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Contract {{ contract.contract_number }}{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>Contract Details</h1>
+    <p class="lead">{{ contract.contract_number }}</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+        <li><a href="{% url 'dashboard_my_contracts' %}">Contracts</a></li>
+        <li class="current">{{ contract.contract_number }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-8">
+        <!-- Contract Overview -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Contract Overview</h5>
+          </div>
+          <div class="card-body">
+            <h4>{{ contract.tender.title }}</h4>
+            <p class="text-muted">{{ contract.tender.organization.name }}</p>
+            <hr>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <strong>Contract Number:</strong><br>
+                <code>{{ contract.contract_number }}</code>
+              </div>
+              <div class="col-md-6">
+                <strong>Status:</strong><br>
+                <span class="badge bg-{{ contract.status|yesno:'success,warning,info' }}">{{ contract.get_status_display }}</span>
+              </div>
+              <div class="col-md-6">
+                <strong>Contract Value:</strong><br>
+                <span class="text-success fs-5">{{ contract.currency }} {{ contract.contract_value|intcomma }}</span>
+              </div>
+              <div class="col-md-6">
+                <strong>Duration:</strong><br>
+                {{ contract.duration_days }} days
+              </div>
+              <div class="col-md-6">
+                <strong>Start Date:</strong><br>
+                {{ contract.start_date|date:"M d, Y" }}
+              </div>
+              <div class="col-md-6">
+                <strong>End Date:</strong><br>
+                {{ contract.end_date|date:"M d, Y" }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="card mb-4">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-list-check"></i> Terms and Conditions</h5>
+          </div>
+          <div class="card-body">
+            <p>{{ contract.terms_and_conditions|linebreaks }}</p>
+          </div>
+        </div>
+
+        <!-- Milestones -->
+        <div class="card mb-4">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-flag"></i> Contract Milestones</h5>
+          </div>
+          <div class="card-body">
+            {% if milestones %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Milestone</th>
+                    <th>Amount</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for milestone in milestones %}
+                  <tr>
+                    <td>{{ milestone.sequence_number }}</td>
+                    <td>
+                      <strong>{{ milestone.title }}</strong><br>
+                      <small class="text-muted">{{ milestone.description|truncatewords:10 }}</small>
+                    </td>
+                    <td>{{ contract.currency }} {{ milestone.amount|intcomma }}</td>
+                    <td>{{ milestone.due_date|date:"M d, Y" }}</td>
+                    <td>
+                      <span class="badge bg-{{ milestone.status|yesno:'success,warning,info' }}">
+                        {{ milestone.get_status_display }}
+                      </span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center py-3">No milestones defined yet</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Quick Info -->
+        <div class="card mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Quick Information</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <strong>Performance Bond:</strong><br>
+                {{ contract.currency }} {{ contract.performance_bond_amount|intcomma|default:"N/A" }}
+              </li>
+              <li class="mb-2">
+                <strong>Retention:</strong><br>
+                {{ contract.retention_percentage }}%
+              </li>
+              <li class="mb-2">
+                <strong>Vendor:</strong><br>
+                {{ contract.vendor.company_name }}
+              </li>
+              <li class="mb-2">
+                <strong>Created:</strong><br>
+                {{ contract.created_at|date:"M d, Y" }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Signature Status -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h6>Signature Status</h6>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                {% if contract.signed_by_vendor %}
+                <i class="bi bi-check-circle-fill text-success"></i> Signed by Vendor
+                {% else %}
+                <i class="bi bi-clock text-warning"></i> Pending Vendor Signature
+                {% endif %}
+              </li>
+              <li class="mb-2">
+                {% if contract.signed_by_organization %}
+                <i class="bi bi-check-circle-fill text-success"></i> Signed by Organization
+                {% else %}
+                <i class="bi bi-clock text-warning"></i> Pending Organization Signature
+                {% endif %}
+              </li>
+            </ul>
+            {% if contract.signed_contract %}
+            <a href="{{ contract.signed_contract.url }}" class="btn btn-outline-primary w-100" download>
+              <i class="bi bi-download"></i> Download Contract
+            </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+          <div class="card-body">
+            <h6>Actions</h6>
+            <div class="d-grid gap-2">
+              <a href="{% url 'tender_detail' contract.tender.slug %}" class="btn btn-outline-primary">
+                <i class="bi bi-eye"></i> View Original Tender
+              </a>
+              <a href="#" class="btn btn-outline-success">
+                <i class="bi bi-download"></i> Download Documents
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

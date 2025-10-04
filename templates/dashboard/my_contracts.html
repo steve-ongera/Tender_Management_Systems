@@ -1,0 +1,124 @@
+<!-- ==================== MY CONTRACTS TEMPLATE ==================== -->
+<!-- File: dashboard/my_contracts.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}My Contracts{% endblock %}
+
+{% block content %}
+<div class="page-title accent-background">
+  <div class="container">
+    <h1>My Contracts</h1>
+    <p class="lead">Manage your awarded contracts</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'dashboard_home' %}">Dashboard</a></li>
+        <li class="current">My Contracts</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="row gy-4">
+      {% for contract in page_obj %}
+      <div class="col-12">
+        <div class="card contract-card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="badge bg-primary">{{ contract.tender.category.name }}</span>
+                  <span class="badge bg-{{ contract.status|yesno:'success,warning,info' }}">{{ contract.get_status_display }}</span>
+                </div>
+                <h5 class="mb-2">{{ contract.tender.title }}</h5>
+                <p class="mb-2">
+                  <strong>Contract Number:</strong> <code>{{ contract.contract_number }}</code><br>
+                  <strong>Organization:</strong> {{ contract.tender.organization.name }}
+                </p>
+                <p class="text-muted small mb-0">
+                  <i class="bi bi-calendar"></i> {{ contract.start_date|date:"M d, Y" }} - {{ contract.end_date|date:"M d, Y" }} ({{ contract.duration_days }} days)
+                </p>
+              </div>
+              <div class="col-lg-4 text-lg-end">
+                <h4 class="text-success mb-2">{{ contract.currency }} {{ contract.contract_value|intcomma }}</h4>
+                <p class="text-muted small mb-3">Contract Value</p>
+                <a href="{% url 'dashboard_contract_detail' contract.contract_number %}" class="btn btn-outline-primary">
+                  <i class="bi bi-eye"></i> View Details
+                </a>
+              </div>
+            </div>
+            
+            <hr>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <small class="text-muted d-block">Signed Status</small>
+                <div class="mt-1">
+                  {% if contract.signed_by_vendor %}
+                  <i class="bi bi-check-circle text-success"></i> Signed by Vendor
+                  {% else %}
+                  <i class="bi bi-clock text-warning"></i> Pending Vendor Signature
+                  {% endif %}
+                  <br>
+                  {% if contract.signed_by_organization %}
+                  <i class="bi bi-check-circle text-success"></i> Signed by Organization
+                  {% else %}
+                  <i class="bi bi-clock text-warning"></i> Pending Organization Signature
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6 text-md-end">
+                <small class="text-muted d-block">Performance Bond</small>
+                <strong>{{ contract.currency }} {{ contract.performance_bond_amount|intcomma|default:"N/A" }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <i class="bi bi-inbox fs-1"></i>
+          <h4 class="mt-3">No Contracts Yet</h4>
+          <p>Your awarded contracts will appear here</p>
+          <a href="{% url 'dashboard_my_bids' %}" class="btn btn-primary">View My Bids</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+.contract-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.contract-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}
