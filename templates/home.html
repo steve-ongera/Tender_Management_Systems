@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Home - Tender Management System{% endblock %}
+{% block body_class %}index-page{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="hero" class="hero section">
+  <img src="{% static 'img/hero-bg-abstract.jpg' %}" alt="" data-aos="fade-in" class="">
+
+  <div class="container">
+    <div class="row justify-content-center" data-aos="zoom-out">
+      <div class="col-xl-7 col-lg-9 text-center">
+        <h1>Professional Tender Management Platform</h1>
+        <p>Connecting verified organizations with qualified vendors for transparent and efficient procurement</p>
+      </div>
+    </div>
+    <div class="text-center" data-aos="zoom-out" data-aos-delay="100">
+      <a href="{% url 'tender_list' %}" class="btn-get-started">Browse Tenders</a>
+    </div>
+
+    <div class="row gy-4 mt-5">
+      <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="100">
+        <div class="icon-box">
+          <div class="icon"><i class="bi bi-file-earmark-text"></i></div>
+          <h4 class="title"><a href="{% url 'tender_list' %}">Active Tenders</a></h4>
+          <p class="description">{{ stats.total_tenders }}+ tenders from verified organizations</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="200">
+        <div class="icon-box">
+          <div class="icon"><i class="bi bi-building"></i></div>
+          <h4 class="title"><a href="{% url 'organization_list' %}">Organizations</a></h4>
+          <p class="description">{{ stats.active_organizations }}+ verified government and private organizations</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="300">
+        <div class="icon-box">
+          <div class="icon"><i class="bi bi-people"></i></div>
+          <h4 class="title"><a href="{% url 'register' %}">Registered Vendors</a></h4>
+          <p class="description">{{ stats.registered_vendors }}+ qualified vendors ready to bid</p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="400">
+        <div class="icon-box">
+          <div class="icon"><i class="bi bi-award"></i></div>
+          <h4 class="title"><a href="#">Awarded Contracts</a></h4>
+          <p class="description">{{ stats.awarded_contracts }}+ successful project contracts</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Tenders Section -->
+<section id="featured-tenders" class="section light-background">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Featured Tenders</h2>
+    <p>High-value opportunities from trusted organizations</p>
+  </div>
+
+  <div class="container">
+    <div class="row gy-4">
+      {% for tender in featured_tenders %}
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="card h-100">
+          <div class="card-body">
+            <span class="badge bg-primary mb-2">{{ tender.category.name }}</span>
+            <h5 class="card-title">
+              <a href="{% url 'tender_detail' tender.slug %}">{{ tender.title|truncatewords:12 }}</a>
+            </h5>
+            <p class="text-muted small">
+              <i class="bi bi-building"></i> {{ tender.organization.name }}
+            </p>
+            <p class="card-text">{{ tender.description|truncatewords:20 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-primary fw-bold">
+                {{ tender.currency }} {{ tender.estimated_value|intcomma }}
+              </span>
+              <a href="{% url 'tender_detail' tender.slug %}" class="btn btn-sm btn-outline-primary">
+                View Details
+              </a>
+            </div>
+            <div class="mt-2">
+              <small class="text-danger">
+                <i class="bi bi-clock"></i> Closes: {{ tender.submission_deadline|date:"M d, Y" }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <p class="text-center">No featured tenders at the moment.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section id="categories" class="section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Tender Categories</h2>
+    <p>Browse tenders by category</p>
+  </div>
+
+  <div class="container">
+    <div class="row gy-4">
+      {% for category in categories %}
+      <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+        <a href="{% url 'tender_category' category.slug %}" class="text-decoration-none">
+          <div class="card text-center h-100">
+            <div class="card-body">
+              <i class="bi bi-{{ category.icon|default:'folder' }} display-4 text-primary"></i>
+              <h5 class="card-title mt-3">{{ category.name }}</h5>
+              <p class="text-muted small">{{ category.tenders.count }} active tenders</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'tender_categories' %}" class="btn btn-primary">View All Categories</a>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Tenders Section -->
+<section id="recent-tenders" class="section light-background">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Recent Tenders</h2>
+    <p>Latest procurement opportunities</p>
+  </div>
+
+  <div class="container">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Tender Number</th>
+            <th>Title</th>
+            <th>Organization</th>
+            <th>Value</th>
+            <th>Deadline</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tender in recent_tenders %}
+          <tr>
+            <td><code>{{ tender.tender_number }}</code></td>
+            <td>
+              <a href="{% url 'tender_detail' tender.slug %}">
+                {{ tender.title|truncatewords:10 }}
+              </a>
+            </td>
+            <td>{{ tender.organization.name|truncatewords:5 }}</td>
+            <td><strong>{{ tender.currency }} {{ tender.estimated_value|intcomma }}</strong></td>
+            <td>
+              <span class="badge bg-warning text-dark">
+                {{ tender.submission_deadline|date:"M d, Y" }}
+              </span>
+            </td>
+            <td>
+              <a href="{% url 'tender_detail' tender.slug %}" class="btn btn-sm btn-primary">
+                View
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center">No recent tenders available.</td>
+        </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary">View All Tenders</a>
+    </div>
+    </div>
+</section>
+{% endblock %}
