@@ -5,179 +5,53 @@
 {% block title %}{{ tender.title }} - Tender Details{% endblock %}
 
 {% block content %}
-<!-- Tender Header -->
-<section class="py-4 bg-light">
+<!-- Page Title -->
+<div class="page-title accent-background">
   <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'tender_list' %}">Tenders</a></li>
-        <li class="breadcrumb-item active">{{ tender.tender_number }}</li>
+    <h1>{{ tender.title }}</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'tender_list' %}">Tenders</a></li>
+        <li class="current">{{ tender.tender_number }}</li>
       </ol>
     </nav>
-    
-    <div class="row">
-      <div class="col-lg-8">
-        <span class="badge bg-primary mb-2">{{ tender.category.name }}</span>
-        <span class="badge bg-{{ tender.status|yesno:'success,warning,danger' }} mb-2">{{ tender.get_status_display }}</span>
-        {% if tender.is_featured %}
-        <span class="badge bg-warning text-dark mb-2"><i class="bi bi-star-fill"></i> Featured</span>
-        {% endif %}
-        
-        <h1 class="h2 mt-2">{{ tender.title }}</h1>
-        <p class="text-muted">
-          <i class="bi bi-building"></i> 
-          <a href="{% url 'organization_detail' tender.organization.slug %}">{{ tender.organization.name }}</a>
-        </p>
-      </div>
-      
-      <div class="col-lg-4 text-lg-end">
-        <h3 class="text-primary">{{ tender.currency }} {{ tender.estimated_value|intcomma }}</h3>
-        <p class="text-muted">Estimated Value</p>
-        
-        {% if days_remaining > 0 %}
-        <div class="alert alert-warning">
-          <i class="bi bi-clock"></i> <strong>{{ days_remaining }}</strong> days remaining
-        </div>
-        {% else %}
-        <div class="alert alert-danger">
-          <i class="bi bi-exclamation-triangle"></i> Deadline passed
-        </div>
-        {% endif %}
-      </div>
-    </div>
   </div>
-</section>
+</div><!-- End Page Title -->
 
-<!-- Main Content -->
-<section class="py-5">
+<!-- Service Details Section -->
+<section id="service-details" class="service-details section">
   <div class="container">
-    <div class="row">
-      <!-- Left Column - Main Content -->
-      <div class="col-lg-8">
-        <!-- Description -->
-        <div class="card mb-4">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Tender Description</h5>
-          </div>
-          <div class="card-body">
-            <p>{{ tender.description }}</p>
-          </div>
-        </div>
+    <div class="row gy-4">
 
-        <!-- Detailed Requirements -->
-        <div class="card mb-4">
-          <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0"><i class="bi bi-list-check"></i> Detailed Requirements</h5>
-          </div>
-          <div class="card-body">
-            <p>{{ tender.detailed_requirements|linebreaks }}</p>
-          </div>
-        </div>
-
-        <!-- Eligibility Criteria -->
-        <div class="card mb-4">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="bi bi-shield-check"></i> Eligibility Criteria</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-unstyled">
-              <li><i class="bi bi-check-circle text-success"></i> Minimum Experience: <strong>{{ tender.minimum_experience_years }} years</strong></li>
-              <li><i class="bi bi-check-circle text-success"></i> Minimum Turnover: <strong>{{ tender.currency }} {{ tender.minimum_turnover|intcomma }}</strong></li>
-              <li><i class="bi bi-check-circle text-success"></i> Eligible Countries: <strong>{{ tender.eligible_countries }}</strong></li>
-              {% if tender.requires_prequalification %}
-              <li><i class="bi bi-check-circle text-success"></i> Prequalification: <strong>Required</strong></li>
-              {% endif %}
-            </ul>
-          </div>
-        </div>
-
-        <!-- Documents -->
-        {% if documents %}
-        <div class="card mb-4">
-          <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="bi bi-file-earmark-pdf"></i> Tender Documents</h5>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Document Type</th>
-                    <th>Title</th>
-                    <th>Size</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for doc in documents %}
-                  <tr>
-                    <td><span class="badge bg-secondary">{{ doc.get_document_type_display }}</span></td>
-                    <td>{{ doc.title }}</td>
-                    <td>{{ doc.file_size|filesizeformat }}</td>
-                    <td>
-                      <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary" download>
-                        <i class="bi bi-download"></i> Download
-                      </a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        {% endif %}
-
-        <!-- Amendments -->
-        {% if amendments %}
-        <div class="card mb-4">
-          <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Amendments</h5>
-          </div>
-          <div class="card-body">
-            {% for amendment in amendments %}
-            <div class="alert alert-warning">
-              <h6>{{ amendment.title }}</h6>
-              <p class="mb-0">{{ amendment.description }}</p>
-              <small class="text-muted">Published: {{ amendment.published_at|date:"M d, Y" }}</small>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-
-        <!-- Clarifications -->
-        {% if clarifications %}
-        <div class="card mb-4">
-          <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="bi bi-question-circle"></i> Questions & Answers</h5>
-          </div>
-          <div class="card-body">
-            {% for clarification in clarifications %}
-            <div class="mb-3 pb-3 border-bottom">
-              <p class="mb-2"><strong>Q:</strong> {{ clarification.question }}</p>
-              <p class="mb-0 text-success"><strong>A:</strong> {{ clarification.answer }}</p>
-              <small class="text-muted">Answered: {{ clarification.answered_at|date:"M d, Y" }}</small>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- Right Column - Sidebar -->
-      <div class="col-lg-4">
+      <!-- Sidebar -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
         <!-- Quick Info -->
-        <div class="card mb-4">
-          <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Quick Information</h5>
+        <div class="services-list">
+          <div class="mb-3">
+            <span class="badge bg-primary">{{ tender.category.name }}</span>
+            <span class="badge bg-{{ tender.status|yesno:'success,warning,danger' }}">{{ tender.get_status_display }}</span>
+            {% if tender.is_featured %}
+            <span class="badge bg-warning text-dark"><i class="bi bi-star-fill"></i> Featured</span>
+            {% endif %}
           </div>
+        </div>
+
+        <div class="card mb-4">
           <div class="card-body">
+            <h4>Quick Information</h4>
             <ul class="list-unstyled">
               <li class="mb-2">
                 <strong>Tender Number:</strong><br>
                 <code>{{ tender.tender_number }}</code>
+              </li>
+              <li class="mb-2">
+                <strong>Organization:</strong><br>
+                <a href="{% url 'organization_detail' tender.organization.slug %}">{{ tender.organization.name }}</a>
+              </li>
+              <li class="mb-2">
+                <strong>Estimated Value:</strong><br>
+                <span class="text-primary">{{ tender.currency }} {{ tender.estimated_value|intcomma }}</span>
               </li>
               <li class="mb-2">
                 <strong>Procurement Method:</strong><br>
@@ -208,20 +82,24 @@
                 {{ tender.project_location }}, {{ tender.project_city }}
               </li>
             </ul>
+
+            {% if days_remaining > 0 %}
+            <div class="alert alert-warning mt-3">
+              <i class="bi bi-clock"></i> <strong>{{ days_remaining }}</strong> days remaining
+            </div>
+            {% else %}
+            <div class="alert alert-danger mt-3">
+              <i class="bi bi-exclamation-triangle"></i> Deadline passed
+            </div>
+            {% endif %}
           </div>
         </div>
 
-        <!-- Contact -->
-        <div class="card mb-4">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Contact Information</h5>
-          </div>
-          <div class="card-body">
-            <p class="mb-2"><strong>{{ tender.contact_person }}</strong></p>
-            <p class="mb-1"><i class="bi bi-envelope"></i> {{ tender.contact_email }}</p>
-            <p class="mb-0"><i class="bi bi-telephone"></i> {{ tender.contact_phone }}</p>
-          </div>
-        </div>
+        <!-- Contact Information -->
+        <h4>Contact Information</h4>
+        <p class="mb-2"><strong>{{ tender.contact_person }}</strong></p>
+        <p class="mb-1"><i class="bi bi-envelope"></i> {{ tender.contact_email }}</p>
+        <p class="mb-3"><i class="bi bi-telephone"></i> {{ tender.contact_phone }}</p>
 
         <!-- Actions -->
         <div class="card mb-4">
@@ -231,7 +109,7 @@
               <div class="alert alert-info">
                 <i class="bi bi-check-circle"></i> You have submitted a bid
               </div>
-              <a href="#" class="btn btn-outline-primary w-100">
+              <a href="#" class="btn btn-outline-primary w-100 mb-2">
                 View My Bid
               </a>
               {% else %}
@@ -252,7 +130,7 @@
             <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100 mb-2">
               Login
             </a>
-            <a href="{% url 'vendor_registration' %}" class="btn btn-outline-primary w-100">
+            <a href="{% url 'vendor_registration' %}" class="btn btn-outline-primary w-100 mb-2">
               Register as Vendor
             </a>
             {% endif %}
@@ -272,7 +150,191 @@
           </div>
         </div>
       </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+        <!-- Description -->
+        <div class="mb-4">
+          <h3><i class="bi bi-info-circle"></i> Tender Description</h3>
+          <p>{{ tender.description }}</p>
+        </div>
+
+        <!-- Detailed Requirements -->
+        <div class="mb-4">
+          <h3><i class="bi bi-list-check"></i> Detailed Requirements</h3>
+          <p>{{ tender.detailed_requirements|linebreaks }}</p>
+        </div>
+
+        <!-- Eligibility Criteria -->
+        <div class="mb-4">
+          <h3><i class="bi bi-shield-check"></i> Eligibility Criteria</h3>
+          <ul>
+            <li><i class="bi bi-check-circle"></i> <span>Minimum Experience: <strong>{{ tender.minimum_experience_years }} years</strong></span></li>
+            <li><i class="bi bi-check-circle"></i> <span>Minimum Turnover: <strong>{{ tender.currency }} {{ tender.minimum_turnover|intcomma }}</strong></span></li>
+            <li><i class="bi bi-check-circle"></i> <span>Eligible Countries: <strong>{{ tender.eligible_countries }}</strong></span></li>
+            {% if tender.requires_prequalification %}
+            <li><i class="bi bi-check-circle"></i> <span>Prequalification: <strong>Required</strong></span></li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- Documents -->
+        {% if documents %}
+        <div class="mb-4">
+          <h3><i class="bi bi-file-earmark-pdf"></i> Tender Documents</h3>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Title</th>
+                  <th>Size</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for doc in documents %}
+                <tr>
+                  <td><span class="badge bg-secondary">{{ doc.get_document_type_display }}</span></td>
+                  <td>{{ doc.title }}</td>
+                  <td>{{ doc.file_size|filesizeformat }}</td>
+                  <td>
+                    <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary" download>
+                      <i class="bi bi-download"></i> Download
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Amendments -->
+        {% if amendments %}
+        <div class="mb-4">
+          <h3><i class="bi bi-exclamation-triangle"></i> Amendments</h3>
+          {% for amendment in amendments %}
+          <div class="alert alert-warning">
+            <h6>{{ amendment.title }}</h6>
+            <p class="mb-0">{{ amendment.description }}</p>
+            <small class="text-muted">Published: {{ amendment.published_at|date:"M d, Y" }}</small>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Clarifications -->
+        {% if clarifications %}
+        <div class="mb-4">
+          <h3><i class="bi bi-question-circle"></i> Questions & Answers</h3>
+          {% for clarification in clarifications %}
+          <div class="mb-3 pb-3 border-bottom">
+            <p class="mb-2"><strong>Q:</strong> {{ clarification.question }}</p>
+            <p class="mb-0 text-success"><strong>A:</strong> {{ clarification.answer }}</p>
+            <small class="text-muted">Answered: {{ clarification.answered_at|date:"M d, Y" }}</small>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
     </div>
   </div>
-</section>
+</section><!-- /Service Details Section -->
+
+<style>
+
+
+
+.service-details {
+  padding: 60px 0;
+}
+
+.services-list {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.service-details h3 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #212529;
+}
+
+.service-details h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #212529;
+}
+
+.service-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.service-details ul li {
+  padding: 5px 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.service-details ul i {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #0d6efd;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.alert {
+  border-radius: 8px;
+  padding: 12px 20px;
+}
+
+.btn {
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+code {
+  background-color: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #d63384;
+}
+</style>
 {% endblock %}
