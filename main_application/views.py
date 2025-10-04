@@ -247,7 +247,7 @@ def vendor_registration(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful! Your account is pending verification.')
-            return redirect('dashboard:home')
+            return redirect('dashboard_home')
     else:
         form = VendorRegistrationForm()
     
@@ -263,7 +263,7 @@ def organization_registration(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Registration successful! Your organization is pending verification.')
-            return redirect('dashboard:home')
+            return redirect('dashboard_home')
     else:
         form = OrganizationRegistrationForm()
     
@@ -348,7 +348,7 @@ def my_bids(request):
         return render(request, 'dashboard/my_bids.html', context)
     except Vendor.DoesNotExist:
         messages.error(request, 'You must be registered as a vendor to view this page.')
-        return redirect('dashboard:home')
+        return redirect('dashboard_home')
 
 
 @login_required
@@ -380,7 +380,7 @@ def submit_bid(request, tender_slug):
                 bid.save()
                 
                 messages.success(request, 'Your bid has been submitted successfully!')
-                return redirect('dashboard:my_bids')
+                return redirect('dashboard_my_bids')
         else:
             form = BidForm(initial={'currency': tender.currency})
         
@@ -412,7 +412,7 @@ def my_contracts(request):
         return render(request, 'dashboard/my_contracts.html', context)
     except Vendor.DoesNotExist:
         messages.error(request, 'You must be registered as a vendor.')
-        return redirect('dashboard:home')
+        return redirect('dashboard_home')
 
 
 @login_required
@@ -427,7 +427,7 @@ def contract_detail(request, contract_number):
         pass
     else:
         messages.error(request, 'You do not have permission to view this contract.')
-        return redirect('dashboard:home')
+        return redirect('dashboard_home')
     
     milestones = contract.milestones.all().order_by('sequence_number')
     
